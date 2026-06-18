@@ -426,20 +426,19 @@
   <script>
     // ========= 合并真题数据到主题库 =========
     (function mergeRealData() {
-      // const 全局变量不在 window 上，直接引用
-      const realSources = [
-        { data: typeof QUIZ_TAX1_REAL !== 'undefined' ? QUIZ_TAX1_REAL : null, key: 'tax1' },
-        { data: typeof QUIZ_TAX2_REAL !== 'undefined' ? QUIZ_TAX2_REAL : null, key: 'tax2' },
-        { data: typeof QUIZ_LAW_REAL !== 'undefined' ? QUIZ_LAW_REAL : null, key: 'law' },
-        { data: typeof QUIZ_PRACTICE_REAL !== 'undefined' ? QUIZ_PRACTICE_REAL : null, key: 'practice' },
-        { data: typeof QUIZ_FINANCE_REAL !== 'undefined' ? QUIZ_FINANCE_REAL : null, key: 'finance' },
-      ];
-      realSources.forEach(({ data, key }) => {
-        if (data && QUIZ_DATA[key]) {
-          QUIZ_DATA[key].chapters = [...data.chapters, ...QUIZ_DATA[key].chapters];
-          console.log('[真题] ' + key + ': ' + data.chapters.length + ' 章已合并');
+      const subjects = ['tax1','tax2','law','practice','finance'];
+      const varNames = ['QUIZ_TAX1_REAL','QUIZ_TAX2_REAL','QUIZ_LAW_REAL','QUIZ_PRACTICE_REAL','QUIZ_FINANCE_REAL'];
+      subjects.forEach((key, i) => {
+        let realData = null;
+        try { realData = eval(varNames[i]); } catch(e) { realData = null; }
+        if (realData && QUIZ_DATA[key]) {
+          QUIZ_DATA[key].chapters = [...realData.chapters, ...QUIZ_DATA[key].chapters];
+          console.log('[真题] ' + key + ': ' + realData.chapters.length + ' 章已合并');
+        } else {
+          console.log('[真题] ' + key + ': 未加载 (realData=' + realData + ')');
         }
       });
+      console.log('[真题] 合并完成, 当前科目:', Object.keys(QUIZ_DATA).map(k => k+':'+QUIZ_DATA[k].chapters.length+'章'));
     })();
 
     // ==================== 状态管理 ====================
