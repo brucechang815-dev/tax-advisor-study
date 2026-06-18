@@ -494,6 +494,10 @@
 
     // ==================== 初始化 ====================
     document.addEventListener('DOMContentLoaded', function() {
+      // 初始化：默认选中"全部科目"+"章节练习"
+      selectMode('chapter');
+      selectSubject('all');
+
       const params = new URLSearchParams(window.location.search);
       const sub = params.get('subject');
       const mode = params.get('mode');
@@ -501,6 +505,13 @@
       if (mode === 'wrong') selectMode('wrong');
       updateWrongCount();
       updateAvailableCount();
+
+      // 调试：输出数据加载情况
+      console.log('[初始化] QUIZ_DATA keys:', Object.keys(QUIZ_DATA || {}));
+      console.log('[初始化] 各科章节数:',
+        Object.entries(QUIZ_DATA || {}).map(([k,v]) => k+':'+(v.chapters||[]).length+'章').join(', '));
+      const totalQs = Object.values(QUIZ_DATA||{}).reduce((s,v)=>s+(v.chapters||[]).reduce((ss,c)=>ss+(c.questions||[]).length,0),0);
+      console.log('[初始化] 总题目数:', totalQs);
     });
 
     function updateWrongCount() {
