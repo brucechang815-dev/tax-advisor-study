@@ -2,7 +2,7 @@
 
 > 基于2025年税务师考试教材整理的知识可视化与智能刷题系统
 
-**[🚀 在线体验](https://your-username.github.io/tax-advisor-study/)**
+**[🚀 在线体验](https://brucechang815-dev.github.io/tax-advisor-study/)**
 
 ---
 
@@ -76,7 +76,7 @@ tax-advisor-study/
 
 ```bash
 # 克隆项目
-git clone https://github.com/your-username/tax-advisor-study.git
+git clone https://github.com/brucechang815-dev/tax-advisor-study.git
 
 # 进入目录
 cd tax-advisor-study
@@ -96,7 +96,7 @@ npx serve .
 1. Fork 本项目，或创建新仓库并上传文件
 2. 进入仓库 → `Settings` → `Pages`
 3. Source 选择 `main` 分支，目录选择 `/ (root)`
-4. 点击 Save，几分钟后即可访问 `https://你的用户名.github.io/仓库名/`
+4. 点击 Save，几分钟后即可访问 `https://brucechang815-dev.github.io/tax-advisor-study/`
 
 ---
 
