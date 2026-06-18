@@ -34,6 +34,8 @@
     .mm-level1 rect { rx: 12px; ry: 12px; }
     .mm-level2 rect { rx: 8px; ry: 8px; }
     .mm-level3 rect { rx: 6px; ry: 6px; }
+    .mm-level4 rect { rx: 4px; ry: 4px; }
+    .mm-level5 rect { rx: 4px; ry: 4px; }
     
     .toggle-circle {
       cursor: pointer;
@@ -148,6 +150,8 @@
         <button class="toolbar-btn" onclick="expandAll()">全部展开</button>
         <button class="toolbar-btn" onclick="collapseToLevel(1)">收缩到一级</button>
         <button class="toolbar-btn" onclick="collapseToLevel(2)">收缩到二级</button>
+        <button class="toolbar-btn" onclick="collapseToLevel(3)">收缩到三级</button>
+        <button class="toolbar-btn" onclick="collapseToLevel(4)">收缩到四级</button>
         <button class="toolbar-btn" onclick="resetView()">复位</button>
         <button class="toolbar-btn" onclick="goToQuiz()">📝 刷这科题目</button>
       </div>
@@ -181,8 +185,10 @@
         <div class="legend-item"><div class="legend-dot" style="background:#2C3E50;width:14px;height:14px;border-radius:4px;"></div> 根节点</div>
         <div class="legend-item"><div class="legend-dot" style="background:#E74C3C;"></div> 科目节点</div>
         <div class="legend-item"><div class="legend-dot" style="background:#3498DB;"></div> 章节节点</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#27AE60;"></div> 知识点节点</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#95A5A6;"></div> 细节节点</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#27AE60;"></div> 三级节点</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#F0B429;"></div> 四级节点</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#D946EF;"></div> 五级节点</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#94A3B8;"></div> 六级节点</div>
       </div>
     </div>
 
@@ -218,8 +224,10 @@
         tax1: '#E74C3C', tax2: '#E67E22', finance: '#27AE60', practice: '#2980B9', law: '#8E44AD'
       }},
       level2: { fill: '#F0F7FF', text: '#2C3E50', stroke: '#3498DB' },
-      level3: { fill: '#F8FFF8', text: '#2C3E50', stroke: '#27AE60' },
-      level4: { fill: '#FEFEFE', text: '#555', stroke: '#BDC3C7' },
+      level3: { fill: '#E8F8F5', text: '#2C3E50', stroke: '#27AE60' },
+      level4: { fill: '#FFF9E6', text: '#555', stroke: '#F0B429' },
+      level5: { fill: '#FDF2F8', text: '#555', stroke: '#D946EF' },
+      level6: { fill: '#F8FAFC', text: '#666', stroke: '#94A3B8' },
     };
 
     // ==================== 初始化 ====================
@@ -300,9 +308,9 @@
     }
 
     // ==================== 布局计算 ====================
-    const XGAP = 220;  // 水平间距
-    const YMIN = 36;   // 最小节点高度
-    const YGAP = 8;    // 垂直间距
+    const XGAP = 180;  // 水平间距（缩小以容纳更多层级）
+    const YMIN = 30;   // 最小节点高度
+    const YGAP = 6;    // 垂直间距
 
     function measureText(text, fontSize) {
       // 估算文字宽度（中文约1.1倍font size，英文约0.6倍）
@@ -316,11 +324,11 @@
     }
 
     function getNodeSize(node, level) {
-      const fontSize = level === 0 ? 16 : level === 1 ? 14 : level === 2 ? 13 : 12;
+      const fontSize = level <= 1 ? 16 : level === 2 ? 14 : level === 3 ? 13 : level === 4 ? 11 : 10;
       const textW = measureText(node.name, fontSize);
-      const pw = level === 0 ? 24 : level === 1 ? 20 : 16;
-      const ph = level === 0 ? 16 : 12;
-      const w = Math.max(textW + pw * 2, level === 0 ? 120 : level === 1 ? 110 : 100);
+      const pw = level <= 1 ? 24 : level === 2 ? 20 : 16;
+      const ph = level <= 1 ? 16 : 10;
+      const w = Math.max(textW + pw * 2, level <= 1 ? 120 : 100);
       const h = Math.max(YMIN, fontSize + ph * 2);
       return { w, h, fontSize };
     }
@@ -395,8 +403,10 @@
       const { level } = tree;
       if (level <= 1) return { fill: subjectColor || '#2C3E50', text: '#FFFFFF', stroke: subjectColor || '#1A252F' };
       if (level === 2) return { fill: '#F0F7FF', text: '#2C3E50', stroke: subjectColor || '#3498DB' };
-      if (level === 3) return { fill: '#F8FFF8', text: '#2C3E50', stroke: '#A9DFBF' };
-      return { fill: '#FAFAFA', text: '#555', stroke: '#D5D8DC' };
+      if (level === 3) return { fill: '#E8F8F5', text: '#2C3E50', stroke: '#A9DFBF' };
+      if (level === 4) return { fill: '#FFF9E6', text: '#555', stroke: '#F0B429' };
+      if (level === 5) return { fill: '#FDF2F8', text: '#555', stroke: '#D946EF' };
+      return { fill: '#F8FAFC', text: '#666', stroke: '#94A3B8' };
     }
 
     function renderNodes(g, tree, subjectColor) {
@@ -415,7 +425,7 @@
       rect.setAttribute('fill', colors.fill);
       rect.setAttribute('stroke', colors.stroke);
       rect.setAttribute('stroke-width', level <= 1 ? 2 : 1.5);
-      rect.setAttribute('rx', level === 0 ? 16 : level === 1 ? 12 : 8);
+      rect.setAttribute('rx', level <= 1 ? 16 : level === 2 ? 12 : level === 3 ? 8 : level === 4 ? 6 : 4);
       nodeG.appendChild(rect);
 
       // 文字
@@ -426,7 +436,7 @@
       text.setAttribute('dominant-baseline', 'central');
       text.setAttribute('fill', colors.text);
       text.setAttribute('font-size', size.fontSize);
-      text.setAttribute('font-weight', level <= 1 ? '700' : level === 2 ? '600' : '400');
+      text.setAttribute('font-weight', level <= 1 ? '700' : level === 2 ? '600' : level === 3 ? '500' : '400');
       text.setAttribute('font-family', "-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif");
       text.textContent = node.name;
       nodeG.appendChild(text);
