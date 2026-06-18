@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>税务师备考中心 2025</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">📊</span>
+        <div class="logo-text">
+          <span class="logo-title">税务师备考中心</span>
+          <span class="logo-sub">2025年度 · 五科全覆盖</span>
+        </div>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link active">首页</a>
+        <a href="mindmap.html" class="nav-link">思维导图</a>
+        <a href="quiz.html" class="nav-link">刷题训练</a>
+        <a href="progress.html" class="nav-link">学习进度</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 英雄区 -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">系统备考<br><span class="accent">税务师考试</span></h1>
+      <p class="hero-desc">基于2025年最新教材 · 思维导图梳理知识脉络 · 智能错题强化训练</p>
+      <div class="hero-actions">
+        <a href="mindmap.html" class="btn btn-primary">开始学习思维导图</a>
+        <a href="quiz.html" class="btn btn-secondary">进入刷题训练</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="subject-orbits">
+        <div class="orbit-center">税务师</div>
+        <div class="orbit-item" style="--i:0">税法一</div>
+        <div class="orbit-item" style="--i:1">税法二</div>
+        <div class="orbit-item" style="--i:2">财务会计</div>
+        <div class="orbit-item" style="--i:3">涉税实务</div>
+        <div class="orbit-item" style="--i:4">涉税法律</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 科目卡片 -->
+  <section class="subjects-section">
+    <div class="section-header">
+      <h2>五大科目</h2>
+      <p>选择科目开始学习</p>
+    </div>
+    <div class="subjects-grid">
+      <div class="subject-card" data-subject="tax1" onclick="goToSubject('tax1')">
+        <div class="card-header" style="background: linear-gradient(135deg, #E74C3C, #C0392B)">
+          <span class="card-icon">📋</span>
+          <div class="card-badges">
+            <span class="badge">流转税</span>
+            <span class="badge">重点科目</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3>税法（一）</h3>
+          <p>增值税 · 消费税 · 关税 · 资源税 · 土地增值税</p>
+          <div class="card-stats">
+            <div class="stat"><span class="stat-num" id="stat-tax1-know">8</span><span class="stat-label">知识板块</span></div>
+            <div class="stat"><span class="stat-num" id="stat-tax1-quiz">6</span><span class="stat-label">章节题库</span></div>
+          </div>
+          <div class="card-progress">
+            <div class="progress-bar"><div class="progress-fill" style="width:0%; background:#E74C3C"></div></div>
+            <span class="progress-text">未开始</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="subject-card" data-subject="tax2" onclick="goToSubject('tax2')">
+        <div class="card-header" style="background: linear-gradient(135deg, #E67E22, #D35400)">
+          <span class="card-icon">💰</span>
+          <div class="card-badges">
+            <span class="badge">所得税</span>
+            <span class="badge">核心重点</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3>税法（二）</h3>
+          <p>企业所得税 · 个人所得税 · 房产税 · 印花税 · 契税</p>
+          <div class="card-stats">
+            <div class="stat"><span class="stat-num">9</span><span class="stat-label">知识板块</span></div>
+            <div class="stat"><span class="stat-num">3</span><span class="stat-label">章节题库</span></div>
+          </div>
+          <div class="card-progress">
+            <div class="progress-bar"><div class="progress-fill" style="width:0%; background:#E67E22"></div></div>
+            <span class="progress-text">未开始</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="subject-card" data-subject="finance" onclick="goToSubject('finance')">
+        <div class="card-header" style="background: linear-gradient(135deg, #27AE60, #1E8449)">
+          <span class="card-icon">📈</span>
+          <div class="card-badges">
+            <span class="badge">财务</span>
+            <span class="badge">会计</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3>财务与会计</h3>
+          <p>财务管理 · 投资决策 · 会计核算 · 财务报表分析</p>
+          <div class="card-stats">
+            <div class="stat"><span class="stat-num">9</span><span class="stat-label">知识板块</span></div>
+            <div class="stat"><span class="stat-num">2</span><span class="stat-label">章节题库</span></div>
+          </div>
+          <div class="card-progress">
+            <div class="progress-bar"><div class="progress-fill" style="width:0%; background:#27AE60"></div></div>
+            <span class="progress-text">未开始</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="subject-card" data-subject="practice" onclick="goToSubject('practice')">
+        <div class="card-header" style="background: linear-gradient(135deg, #2980B9, #1A5276)">
+          <span class="card-icon">⚖️</span>
+          <div class="card-badges">
+            <span class="badge">实务</span>
+            <span class="badge">代理</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3>涉税服务实务</h3>
+          <p>税务登记 · 纳税申报 · 税款征收 · 纳税筹划</p>
+          <div class="card-stats">
+            <div class="stat"><span class="stat-num">9</span><span class="stat-label">知识板块</span></div>
+            <div class="stat"><span class="stat-num">2</span><span class="stat-label">章节题库</span></div>
+          </div>
+          <div class="card-progress">
+            <div class="progress-bar"><div class="progress-fill" style="width:0%; background:#2980B9"></div></div>
+            <span class="progress-text">未开始</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="subject-card" data-subject="law" onclick="goToSubject('law')">
+        <div class="card-header" style="background: linear-gradient(135deg, #8E44AD, #6C3483)">
+          <span class="card-icon">📜</span>
+          <div class="card-badges">
+            <span class="badge">民法</span>
+            <span class="badge">行政法</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3>涉税服务相关法律</h3>
+          <p>民法基础 · 合同法 · 公司法 · 行政法 · 税收征管法</p>
+          <div class="card-stats">
+            <div class="stat"><span class="stat-num">7</span><span class="stat-label">知识板块</span></div>
+            <div class="stat"><span class="stat-num">3</span><span class="stat-label">章节题库</span></div>
+          </div>
+          <div class="card-progress">
+            <div class="progress-bar"><div class="progress-fill" style="width:0%; background:#8E44AD"></div></div>
+            <span class="progress-text">未开始</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 功能介绍 -->
+  <section class="features-section">
+    <div class="section-header">
+      <h2>学习功能</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">🗺️</div>
+        <h3>交互思维导图</h3>
+        <p>按科目和章节分层展示知识脉络，支持展开/收缩、节点搜索，快速定位知识点</p>
+        <a href="mindmap.html" class="feature-link">查看思维导图 →</a>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">✏️</div>
+        <h3>智能题库训练</h3>
+        <p>单选题、多选题、判断题、计算题四种题型，按科目/章节分类练习</p>
+        <a href="quiz.html" class="feature-link">开始刷题 →</a>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔁</div>
+        <h3>错题智能复习</h3>
+        <p>做错的题目会被标记，并在后续练习中反复出现，直到连续答对才移出错题本</p>
+        <a href="quiz.html?mode=wrong" class="feature-link">练习错题 →</a>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📊</div>
+        <h3>学习进度追踪</h3>
+        <p>记录每科的学习进度、正确率、错题情况，可视化展示备考状态</p>
+        <a href="progress.html" class="feature-link">查看进度 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="site-footer">
+    <p>税务师备考中心 · 基于2025年税务师考试教材整理 · 仅供学习参考</p>
+    <p>数据来源：税务师教材 · 经典600母题 · 梦3必刷550题 · 梦1应试指南等</p>
+  </footer>
+
+  <script>
+    function goToSubject(subject) {
+      window.location.href = `mindmap.html?subject=${subject}`;
+    }
+
+    // 从 localStorage 加载进度
+    document.addEventListener('DOMContentLoaded', function() {
+      const subjects = ['tax1', 'tax2', 'finance', 'practice', 'law'];
+      subjects.forEach(s => {
+        const progress = JSON.parse(localStorage.getItem(`progress_${s}`) || '{"done":0,"total":1}');
+        const pct = Math.round((progress.done / progress.total) * 100) || 0;
+        const card = document.querySelector(`[data-subject="${s}"]`);
+        if (card) {
+          const fill = card.querySelector('.progress-fill');
+          const text = card.querySelector('.progress-text');
+          if (fill) fill.style.width = pct + '%';
+          if (text) text.textContent = pct === 0 ? '未开始' : pct + '% 已完成';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

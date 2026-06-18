@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学习进度 - 税务师备考中心</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .subject-progress-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .sp-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+    .sp-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+    }
+    .sp-info h3 { font-size: 18px; font-weight: 700; }
+    .sp-info p { font-size: 13px; color: var(--text-light); }
+    .sp-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 16px; }
+    .sp-stat { text-align: center; }
+    .sp-stat-num { font-size: 24px; font-weight: 800; }
+    .sp-stat-label { font-size: 12px; color: var(--text-light); }
+    .sp-bar { background: #EAECEE; border-radius: 6px; height: 10px; overflow: hidden; }
+    .sp-fill { height: 100%; border-radius: 6px; transition: width 0.6s; }
+    .sp-last { font-size: 12px; color: var(--text-light); margin-top: 8px; }
+    
+    .wrongbook-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .wrongbook-section h3 { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+    .wrong-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .wrong-item:last-child { border-bottom: none; }
+    .wrong-times {
+      background: #E74C3C;
+      color: white;
+      border-radius: 50%;
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .wrong-stem { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .clear-btn {
+      padding: 6px 16px;
+      background: none;
+      border: 1.5px solid #E74C3C;
+      color: #E74C3C;
+      border-radius: 50px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .clear-btn:hover { background: #E74C3C; color: white; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">📊</span>
+        <div class="logo-text">
+          <span class="logo-title">税务师备考中心</span>
+          <span class="logo-sub">学习进度</span>
+        </div>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">首页</a>
+        <a href="mindmap.html" class="nav-link">思维导图</a>
+        <a href="quiz.html" class="nav-link">刷题训练</a>
+        <a href="progress.html" class="nav-link active">学习进度</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="progress-layout">
+    <h2 style="font-size:28px;font-weight:800;margin-bottom:8px;">📊 学习进度</h2>
+    <p style="color:var(--text-light);margin-bottom:32px;">跟踪你的备考进展</p>
+
+    <!-- 总览 -->
+    <div class="progress-overview" id="overview-section"></div>
+
+    <!-- 各科目进度 -->
+    <h3 style="font-size:20px;font-weight:700;margin-bottom:16px;">各科目进度</h3>
+    <div id="subject-progress-list"></div>
+
+    <!-- 错题本 -->
+    <div class="wrongbook-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 style="margin-bottom:0">❌ 错题本 (<span id="wrong-total">0</span>题)</h3>
+        <div style="display:flex;gap:8px;">
+          <button class="clear-btn" onclick="practiceWrong()">练习错题</button>
+          <button class="clear-btn" onclick="clearWrongBook()">清空错题本</button>
+        </div>
+      </div>
+      <div id="wrongbook-list"></div>
+    </div>
+  </div>
+
+  <script src="data/quiz-data.js"></script>
+  <script>
+    const SUBJECTS = [
+      { id: 'tax1', name: '税法（一）', color: '#E74C3C', icon: '📋' },
+      { id: 'tax2', name: '税法（二）', color: '#E67E22', icon: '💰' },
+      { id: 'finance', name: '财务与会计', color: '#27AE60', icon: '📈' },
+      { id: 'practice', name: '涉税服务实务', color: '#2980B9', icon: '⚖️' },
+      { id: 'law', name: '涉税服务相关法律', color: '#8E44AD', icon: '📜' },
+    ];
+
+    function getWrongBook() {
+      return JSON.parse(localStorage.getItem('wrongBook') || '{}');
+    }
+    function getProgress(id) {
+      return JSON.parse(localStorage.getItem(`progress_${id}`) || '{"done":0,"total":0,"correct":0}');
+    }
+
+    function getTotalQuestions(subjectId) {
+      const subject = QUIZ_DATA[subjectId];
+      if (!subject) return 0;
+      return (subject.chapters || []).reduce((sum, ch) => sum + (ch.questions || []).length, 0);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderOverview();
+      renderSubjectProgress();
+      renderWrongBook();
+    });
+
+    function renderOverview() {
+      const el = document.getElementById('overview-section');
+      let totalDone = 0, totalCorrect = 0, totalQ = 0;
+      SUBJECTS.forEach(s => {
+        const p = getProgress(s.id);
+        totalDone += p.done || 0;
+        totalCorrect += p.correct || 0;
+        totalQ += getTotalQuestions(s.id);
+      });
+      const acc = totalDone > 0 ? Math.round(totalCorrect / totalDone * 100) : 0;
+      const wrongCount = Object.keys(getWrongBook()).length;
+
+      el.innerHTML = `
+        <div class="overview-card">
+          <div class="overview-num" style="color:#2C3E50">${totalDone}</div>
+          <div class="overview-label">累计答题</div>
+        </div>
+        <div class="overview-card">
+          <div class="overview-num" style="color:#27AE60">${acc}%</div>
+          <div class="overview-label">综合正确率</div>
+        </div>
+        <div class="overview-card">
+          <div class="overview-num" style="color:#E74C3C">${wrongCount}</div>
+          <div class="overview-label">错题本数量</div>
+        </div>
+        <div class="overview-card">
+          <div class="overview-num" style="color:#E67E22">${totalQ}</div>
+          <div class="overview-label">题库总量</div>
+        </div>
+      `;
+    }
+
+    function renderSubjectProgress() {
+      const el = document.getElementById('subject-progress-list');
+      el.innerHTML = SUBJECTS.map(s => {
+        const p = getProgress(s.id);
+        const total = getTotalQuestions(s.id);
+        const done = p.done || 0;
+        const correct = p.correct || 0;
+        const acc = done > 0 ? Math.round(correct / done * 100) : 0;
+        const studyPct = total > 0 ? Math.round(Math.min(done, total) / total * 100) : 0;
+        return `
+          <div class="subject-progress-card">
+            <div class="sp-header">
+              <div class="sp-icon" style="background:${s.color}20">${s.icon}</div>
+              <div class="sp-info">
+                <h3>${s.name}</h3>
+                <p>题库共 ${total} 题</p>
+              </div>
+              <div style="margin-left:auto;display:flex;gap:8px;">
+                <a href="mindmap.html?subject=${s.id}" style="padding:6px 14px;background:${s.color}20;color:${s.color};border-radius:50px;font-size:13px;text-decoration:none;font-weight:600">查看导图</a>
+                <a href="quiz.html?subject=${s.id}" style="padding:6px 14px;background:${s.color};color:white;border-radius:50px;font-size:13px;text-decoration:none;font-weight:600">继续刷题</a>
+              </div>
+            </div>
+            <div class="sp-stats">
+              <div class="sp-stat">
+                <div class="sp-stat-num" style="color:${s.color}">${done}</div>
+                <div class="sp-stat-label">已答题次</div>
+              </div>
+              <div class="sp-stat">
+                <div class="sp-stat-num" style="color:#27AE60">${correct}</div>
+                <div class="sp-stat-label">答对次数</div>
+              </div>
+              <div class="sp-stat">
+                <div class="sp-stat-num" style="color:${acc>=70?'#27AE60':acc>=50?'#E67E22':'#E74C3C'}">${acc}%</div>
+                <div class="sp-stat-label">正确率</div>
+              </div>
+              <div class="sp-stat">
+                <div class="sp-stat-num" style="color:#2C3E50">${studyPct}%</div>
+                <div class="sp-stat-label">练习覆盖</div>
+              </div>
+            </div>
+            <div class="sp-bar">
+              <div class="sp-fill" style="width:${studyPct}%;background:${s.color}"></div>
+            </div>
+            ${p.lastStudy ? `<div class="sp-last">最近学习：${p.lastStudy}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderWrongBook() {
+      const book = getWrongBook();
+      const items = Object.values(book).sort((a, b) => b.times - a.times);
+      document.getElementById('wrong-total').textContent = items.length;
+      const el = document.getElementById('wrongbook-list');
+      if (items.length === 0) {
+        el.innerHTML = '<p style="color:var(--text-light);font-size:14px;padding:16px 0">错题本为空，继续加油练习！</p>';
+        return;
+      }
+      el.innerHTML = items.slice(0, 20).map(item => {
+        const q = item.q || {};
+        const stem = (q.stem || '（题目数据缺失）').substring(0, 50);
+        return `
+          <div class="wrong-item">
+            <div class="wrong-times">${item.times}</div>
+            <div class="wrong-stem" title="${q.stem || ''}">${stem}${(q.stem || '').length > 50 ? '...' : ''}</div>
+            <span style="font-size:12px;color:${getSubjectColor(item.subjectId)};font-weight:600;flex-shrink:0">${getSubjectName(item.subjectId)}</span>
+          </div>
+        `;
+      }).join('') + (items.length > 20 ? `<p style="text-align:center;color:var(--text-light);font-size:13px;padding:8px">还有 ${items.length-20} 题...去刷题页面练习吧</p>` : '');
+    }
+
+    function getSubjectColor(id) {
+      const c = { tax1:'#E74C3C', tax2:'#E67E22', finance:'#27AE60', practice:'#2980B9', law:'#8E44AD' };
+      return c[id] || '#2C3E50';
+    }
+    function getSubjectName(id) {
+      const n = { tax1:'税法一', tax2:'税法二', finance:'财务会计', practice:'涉税实务', law:'涉税法律' };
+      return n[id] || id;
+    }
+
+    function practiceWrong() {
+      window.location.href = 'quiz.html?mode=wrong';
+    }
+
+    function clearWrongBook() {
+      if (confirm('确定清空所有错题记录吗？此操作不可恢复。')) {
+        localStorage.removeItem('wrongBook');
+        renderWrongBook();
+        renderOverview();
+      }
+    }
+  </script>
+</body>
+</html>
