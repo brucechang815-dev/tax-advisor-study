@@ -426,24 +426,20 @@
   <script>
     // ========= 合并真题数据到主题库 =========
     (function mergeRealData() {
-      const mapping = {
-        'QUIZ_TAX1_REAL': 'tax1',
-        'QUIZ_TAX2_REAL': 'tax2',
-        'QUIZ_LAW_REAL': 'law',
-        'QUIZ_PRACTICE_REAL': 'practice',
-        'QUIZ_FINANCE_REAL': 'finance',
-      };
-      for (const [varName, subjectKey] of Object.entries(mapping)) {
-        if (typeof window[varName] !== 'undefined' && QUIZ_DATA[subjectKey]) {
-          const realData = window[varName];
-          // 在章节列表前插入真题章节
-          QUIZ_DATA[subjectKey].chapters = [
-            ...realData.chapters,
-            ...QUIZ_DATA[subjectKey].chapters,
-          ];
-          console.log(`[真题] ${varName} -> ${subjectKey}: ${realData.chapters.length} 章已合并`);
+      // const 全局变量不在 window 上，直接引用
+      const realSources = [
+        { data: typeof QUIZ_TAX1_REAL !== 'undefined' ? QUIZ_TAX1_REAL : null, key: 'tax1' },
+        { data: typeof QUIZ_TAX2_REAL !== 'undefined' ? QUIZ_TAX2_REAL : null, key: 'tax2' },
+        { data: typeof QUIZ_LAW_REAL !== 'undefined' ? QUIZ_LAW_REAL : null, key: 'law' },
+        { data: typeof QUIZ_PRACTICE_REAL !== 'undefined' ? QUIZ_PRACTICE_REAL : null, key: 'practice' },
+        { data: typeof QUIZ_FINANCE_REAL !== 'undefined' ? QUIZ_FINANCE_REAL : null, key: 'finance' },
+      ];
+      realSources.forEach(({ data, key }) => {
+        if (data && QUIZ_DATA[key]) {
+          QUIZ_DATA[key].chapters = [...data.chapters, ...QUIZ_DATA[key].chapters];
+          console.log('[真题] ' + key + ': ' + data.chapters.length + ' 章已合并');
         }
-      }
+      });
     })();
 
     // ==================== 状态管理 ====================
