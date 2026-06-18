@@ -417,8 +417,35 @@
     </div>
   </div>
 
+  <script src="data/quiz-tax1-real.js"></script>
+  <script src="data/quiz-tax2-real.js"></script>
+  <script src="data/quiz-law-real.js"></script>
+  <script src="data/quiz-practice-real.js"></script>
+  <script src="data/quiz-finance-real.js"></script>
   <script src="data/quiz-data.js"></script>
   <script>
+    // ========= 合并真题数据到主题库 =========
+    (function mergeRealData() {
+      const mapping = {
+        'QUIZ_TAX1_REAL': 'tax1',
+        'QUIZ_TAX2_REAL': 'tax2',
+        'QUIZ_LAW_REAL': 'law',
+        'QUIZ_PRACTICE_REAL': 'practice',
+        'QUIZ_FINANCE_REAL': 'finance',
+      };
+      for (const [varName, subjectKey] of Object.entries(mapping)) {
+        if (typeof window[varName] !== 'undefined' && QUIZ_DATA[subjectKey]) {
+          const realData = window[varName];
+          // 在章节列表前插入真题章节
+          QUIZ_DATA[subjectKey].chapters = [
+            ...realData.chapters,
+            ...QUIZ_DATA[subjectKey].chapters,
+          ];
+          console.log(`[真题] ${varName} -> ${subjectKey}: ${realData.chapters.length} 章已合并`);
+        }
+      }
+    })();
+
     // ==================== 状态管理 ====================
     let currentMode = 'subject';      // subject | random | wrong | exam
     let currentSubject = 'tax1';
