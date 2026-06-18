@@ -426,6 +426,7 @@
   <script>
     // ========= 合并真题数据到主题库 =========
     (function mergeRealData() {
+      if (typeof QUIZ_DATA === 'undefined') { console.error('[真题] QUIZ_DATA 未定义！请检查 quiz-data.js 是否有语法错误'); return; }
       const subjects = ['tax1','tax2','law','practice','finance'];
       const varNames = ['QUIZ_TAX1_REAL','QUIZ_TAX2_REAL','QUIZ_LAW_REAL','QUIZ_PRACTICE_REAL','QUIZ_FINANCE_REAL'];
       subjects.forEach((key, i) => {
@@ -435,10 +436,10 @@
           QUIZ_DATA[key].chapters = [...realData.chapters, ...QUIZ_DATA[key].chapters];
           console.log('[真题] ' + key + ': ' + realData.chapters.length + ' 章已合并');
         } else {
-          console.log('[真题] ' + key + ': 未加载 (realData=' + realData + ')');
+          console.log('[真题] ' + key + ': 未加载 (realData=' + !!realData + ', QUIZ_DATA[' + key + ']=' + !!QUIZ_DATA[key] + ')');
         }
       });
-      console.log('[真题] 合并完成, 当前科目:', Object.keys(QUIZ_DATA).map(k => k+':'+QUIZ_DATA[k].chapters.length+'章'));
+      console.log('[真题] 合并完成');
     })();
 
     // ==================== 状态管理 ====================
